@@ -3,10 +3,14 @@ const CVE = require("../models/cve")
 const getAllCVEs = async(req, res) => {
     try {
         let {page,limit, year, lastModified, score, sortByPublished, sortByLastModified} = req.query
+        
+        // Pagination Logic
         page = page?parseInt(page):1
         limit = limit?parseInt(limit):10
         const skip = (page-1)*limit
+
         const query = {}
+        // Filter By Year - Published Year
         if(year){
             const startDate = new Date(`${year}-01-01T00:00:00.000Z`)
             const endDate = new Date(`${parseInt(year) + 1}-01-01T00:00:00.000Z`)
@@ -15,6 +19,8 @@ const getAllCVEs = async(req, res) => {
                 $lt: endDate
             }
         }
+
+        // Filter By last modified in last N days
         if(lastModified){
             const currentDate = new Date()
             let lastNthDate = new Date(currentDate)
@@ -24,6 +30,8 @@ const getAllCVEs = async(req, res) => {
                 $lte: currentDate
             }
         }
+
+        // Filter By CVE Score
         if(score){
             //query["metrics.cvssMetricV2.cvssData.baseScore"]=parseInt(score)
             const parsedScore = parseInt(score);
@@ -32,8 +40,11 @@ const getAllCVEs = async(req, res) => {
                 { "metrics.cvssMetricV3.cvssData.baseScore": parsedScore }
             ];
         }
+
         const totalPagesQuery = await CVE.find(query)
         let cve = CVE.find(query).limit(limit).skip(skip)
+
+        // Sort By Year - Published and Last Modified
         const sortOptions = {}
         if (sortByPublished !== undefined) {
             sortOptions.published = sortByPublished == 'true' ? 1 : -1;
