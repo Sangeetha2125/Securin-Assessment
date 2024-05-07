@@ -45,7 +45,7 @@ const getAllCVEs = async(req, res) => {
             cve = cve.sort(sortOptions)
         }
         cve = await cve
-        res.status(200).json({data:cve,count:cve.length,currentPage:page,totalPages:Math.ceil(totalPagesQuery.length/limit)})
+        res.status(200).json({data:cve,total:totalPagesQuery.length,count:cve.length,currentPage:page,totalPages:Math.ceil(totalPagesQuery.length/limit)})
         
     } catch (error) {
         res.status(500).json({message:"Something went wrong"})
