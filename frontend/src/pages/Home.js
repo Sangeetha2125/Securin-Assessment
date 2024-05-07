@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 
 const Home = () => {
   const [count, setCount] = useState(0);
-  const [totalPages, setTotalPages] = useState(0);
+  const [totalPages, setTotalPages] = useState(1);
   // eslint-disable-next-line
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useState(10);
